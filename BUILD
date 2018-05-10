@@ -42,6 +42,11 @@ config_setting(
 )
 
 config_setting(
+    name = "solaris_x86_64",
+    values = {"cpu": "solaris"},
+)
+
+config_setting(
     name = "windows_x86_64",
     values = {"cpu": "x64_windows"},
 )
@@ -57,7 +62,8 @@ posix_copts = [
     "-Wa,--noexecstack",
 
     # This is needed on Linux systems (at least) to get rwlock in pthread.
-    "-D_XOPEN_SOURCE=700",
+    "-D_XOPEN_SOURCE=600",
+    "-D__EXTENSIONS__",
 
     # This list of warnings should match those in the top-level CMakeLists.txt.
     "-Wall",
@@ -78,6 +84,7 @@ posix_copts = [
 boringssl_copts = select({
     ":linux_x86_64": posix_copts,
     ":mac_x86_64": posix_copts,
+    ":solaris_x86_64": posix_copts,
     ":windows_x86_64": [
         "-DWIN32_LEAN_AND_MEAN",
         "-DOPENSSL_NO_ASM",
@@ -102,6 +109,7 @@ posix_copts_c11 = [
 boringssl_copts_c11 = boringssl_copts + select({
     ":linux_x86_64": posix_copts_c11,
     ":mac_x86_64": posix_copts_c11,
+    ":solaris_x86_64": posix_copts_c11,
     "//conditions:default": [],
 })
 
@@ -114,6 +122,7 @@ posix_copts_cxx = [
 boringssl_copts_cxx = boringssl_copts + select({
     ":linux_x86_64": posix_copts_cxx,
     ":mac_x86_64": posix_copts_cxx,
+    ":solaris_x86_64": posix_copts_cxx,
     "//conditions:default": [],
 })
 
